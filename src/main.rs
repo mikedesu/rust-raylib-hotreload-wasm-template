@@ -4,7 +4,8 @@ use raylib_wasm::*;
 #[cfg(feature = "native")]
 use raylib_wasm::KeyboardKey as Key;
 
-use game::*;
+use game::game::*;
+use game::state::State;
 
 #[cfg(feature = "native")]
 const fn get_game_path() -> &'static str {
