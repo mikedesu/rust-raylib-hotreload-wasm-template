@@ -16,14 +16,14 @@ const TARGET_HEIGHT: i32 = 360;
 const TARGET_SRC: Rectangle = Rectangle {
     x: 0.0,
     y: 0.0,
-    width: 640.0,
-    height: 360.0,
+    width: TARGET_WIDTH as f32,
+    height: -TARGET_HEIGHT as f32,
 };
 const TARGET_DST: Rectangle = Rectangle {
     x: 0.0,
     y: 0.0,
-    width: 1280.0,
-    height: 720.0,
+    width: WINDOW_WIDTH as f32,
+    height: WINDOW_HEIGHT as f32,
 };
 
 const SPEED_DEFAULT: f32 = 850.0;
@@ -101,12 +101,11 @@ pub unsafe fn game_frame(state: &mut State) {
                 y = state.mouse_pos.y.round()
             };
             draw_text(&mouse_pos, 10, 30, 20, RAYWHITE);
-            DrawCircle(
-                state.mouse_pos.x as i32,
-                state.mouse_pos.y as i32,
-                10.0,
-                RAYWHITE,
-            );
+
+            let mx = (state.mouse_pos.x / 2.0) as i32;
+            let my = (state.mouse_pos.y / 2.0) as i32;
+
+            DrawCircle(mx, my, 10.0, RAYWHITE);
         }
 
         EndTextureMode();
