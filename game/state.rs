@@ -1,4 +1,6 @@
-use raylib_wasm::prelude::*;
+use raylib_wasm::Rectangle;
+use raylib_wasm::RenderTexture2D;
+use raylib_wasm::Vector2;
 
 pub struct State {
     pub rect: Rectangle,
