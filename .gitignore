@@ -1,4 +1,4 @@
 raylib
 target
 Cargo.lock
-.aider.*
+.aider*
