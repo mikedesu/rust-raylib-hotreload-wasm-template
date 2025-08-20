@@ -2,7 +2,8 @@ use raylib_wasm::{KeyboardKey as KEY, *};
 
 // use crate::state::State; // doesn't work
 // use super::state::State; // doesn't work
-// use state::State;
+// use state::State; // doesn't work
+use crate::state::State;
 
 const WINDOW_WIDTH: i32 = 1280;
 const WINDOW_HEIGHT: i32 = 720;
