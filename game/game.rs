@@ -1,5 +1,5 @@
 use raylib_wasm::{KeyboardKey as KEY, *};
-use super::state::State;
+use state::State;
 
 const WINDOW_WIDTH: i32 = 1280;
 const WINDOW_HEIGHT: i32 = 720;
