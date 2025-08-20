@@ -1,5 +1,6 @@
 use raylib_wasm::{KeyboardKey as KEY, *};
-use crate::state::State;
+
+// use crate::state::State; // doesn't work
 
 const WINDOW_WIDTH: i32 = 1280;
 const WINDOW_HEIGHT: i32 = 720;
@@ -22,7 +23,6 @@ const TARGET_DST: Rectangle = Rectangle {
 
 const SPEED_DEFAULT: f32 = 850.0;
 const SPEED_BOOSTED: f32 = 1550.0;
-
 
 #[no_mangle]
 pub unsafe fn game_init() -> State {
