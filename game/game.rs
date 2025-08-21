@@ -1,13 +1,12 @@
 //use raylib_wasm::{KeyboardKey as KEY, *};
 //use raylib_wasm::KeyboardKey as KEY;
 use raylib_wasm::*;
-
 mod state;
-
 // use crate::state::State; // doesn't work
 // use super::state::State; // doesn't work
 // use state::State; // doesn't work
 use state::State;
+use std::collections::HashMap;
 
 const WINDOW_WIDTH: i32 = 1280;
 const WINDOW_HEIGHT: i32 = 720;
@@ -39,10 +38,17 @@ pub unsafe fn game_init() -> State {
 
     init_window(WINDOW_WIDTH, WINDOW_HEIGHT, "game");
 
+    let mut textures: HashMap<i32, Texture> = HashMap::new();
+
+    // game/game.rs|43 col 5-54 error| cannot assign to data in an index of `HashMap<i32, raylib_wasm::Texture>` trait `IndexMut` is required to modify indexed content, but it is not implemented for `HashMap<i32, raylib_wasm::Texture>`
+    //textures[&0] = load_texture("img/human_idle.png");
+
+    textures.insert(0, load_texture("img/human_idle.png"));
+
     State {
         mouse_pos: Vector2 { x: 0.0, y: 0.0 },
         target: LoadRenderTexture(TARGET_WIDTH, TARGET_HEIGHT),
-        tx: load_texture("img/human_idle.png"),
+        textures: textures, //tx: load_texture("img/human_idle.png"),
     }
 }
 
@@ -73,20 +79,13 @@ unsafe fn handle_mouse(state: &mut State) {
     state.mouse_pos = GetMousePosition();
 }
 
-pub type GameFrame = unsafe fn(state: &mut State);
-
-#[no_mangle]
-pub unsafe fn game_frame(state: &mut State) {
-    handle_keys(state);
-    handle_mouse(state);
-
+unsafe fn handle_drawing(state: &mut State) {
     BeginDrawing();
     {
         BeginTextureMode(state.target);
         {
             ClearBackground(BLACK);
             //DrawRectangleRec(state.rect, RAYWHITE);
-            DrawFPS(5, 5);
 
             let c: Color = Color {
                 r: 0x66 as u8,
@@ -109,7 +108,7 @@ pub unsafe fn game_frame(state: &mut State) {
             draw_text(text, x, y, fontsize as usize, c);
 
             DrawTexturePro(
-                state.tx,
+                *state.textures.get(&0).unwrap(),
                 Rectangle {
                     x: 0.0,
                     y: 0.0,
@@ -156,7 +155,18 @@ pub unsafe fn game_frame(state: &mut State) {
         WHITE,
     );
 
+    DrawFPS(5, 5);
+
     EndDrawing();
+}
+
+pub type GameFrame = unsafe fn(state: &mut State);
+
+#[no_mangle]
+pub unsafe fn game_frame(state: &mut State) {
+    handle_keys(state);
+    handle_mouse(state);
+    handle_drawing(state);
 }
 
 #[no_mangle]
