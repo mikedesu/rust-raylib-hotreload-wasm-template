@@ -8,8 +8,7 @@ web = ["raylib-wasm/web"]
 native = ["raylib-wasm/native"]
 
 [dependencies]
-raylib-wasm = { version = "0.0.17", default-features = false }
-# raylib-wasm = { path = "../raylib-wasm", default-features = false }
+raylib-wasm = { version = "0.0.18", default-features = false }
 
 [lib]
 path = "game.rs"
