@@ -229,7 +229,8 @@ if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
 }
 
 
-let images = []
+const images = [];
+const imageStates = [];
 
 let wasm = undefined;
 let dt = undefined;
@@ -323,30 +324,60 @@ WebAssembly.instantiateStreaming(fetch(WASM_PATH), {
             ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, 0);
             ctx.fill();
         },
-        // DrawTexture: (id, x, y, color_ptr) => {
-        //     console.log(x, y, id);
-        //     const img = images[id];
-        //     ctx.drawImage(img, 0, y);
-        // },
+        DrawTexture: (id, x, y, color_ptr) => {
+            const img = images[id];
+            const state = imageStates[id];
+
+            if (state !== 'ready' || !img || !img.complete) {
+                return;
+            }
+
+            ctx.drawImage(img, x, y);
+        },
         LoadTexture: (result_ptr, file_path_ptr) => {
+            // always re-read current wasm buffer (avoid stale buffers in closures)
             const buffer = wf.memory.buffer;
             const file_path = cstr_by_ptr(buffer, file_path_ptr);
 
-            let result = new Uint32Array(buffer, result_ptr, 5)
-            let img = new Image();
-            img.src = file_path;
-            images.push(img);
+            // typed view into wasm memory (fresh)
+            let result = new Uint32Array(wf.memory.buffer, result_ptr, 5);
 
+            // reserve id immediately
+            let id = images.length;
+            images[id] = null;
+            imageStates[id] = 'loading';
+
+            // write the id synchronously so WASM immediately has the handle
+            result[0] = id;
+            result[1] = 0; // width (unknown yet)
+            result[2] = 0; // height (unknown yet)
+            result[3] = 1;
+            result[4] = 7;
+
+            const img = new Image();
             img.onload = () => {
-                images.push(img);
-                result[0] = images.indexOf(img);
-                result[1] = img.width; // width
-                result[2] = img.height; // height
-                result[3] = 1; // mipmaps
-                result[4] = 7; // format PIXELFORMAT_UNCOMPRESSED_R8G8B8A8
+                console.log('Image loaded for id:', id, 'size:', img.width, img.height);
+
+                let resView = new Uint32Array(wf.memory.buffer, result_ptr, 5);
+                resView[0] = id;
+                resView[1] = img.width;
+                resView[2] = img.height;
+                resView[3] = 1;
+                resView[4] = 7;
+
+                images[id] = img;
+                imageStates[id] = 'ready';
+            };
+            img.onerror = (e) => {
+                imageStates[id] = 'error';
+                console.error('LoadTexture error for', file_path, 'id', id, e);
             };
 
-            return result;
+            // set src last
+            img.src = file_path;
+
+            // return (value ignored by wasm usually)
+            return;
         },
         UnloadTexture: () => {},
         GetScreenWidth: () => ctx.canvas.width,
