@@ -15,6 +15,8 @@ const WINDOW_HEIGHT: i32 = 720;
 const TARGET_WIDTH: i32 = 640;
 const TARGET_HEIGHT: i32 = 360;
 
+const ORIGIN: Vector2 = Vector2 { x: 0.0, y: 0.0 };
+
 const TARGET_SRC: Rectangle = Rectangle {
     x: 0.0,
     y: 0.0,
@@ -34,18 +36,13 @@ const TARGET_FPS: i32 = 60;
 #[no_mangle]
 pub unsafe fn game_init() -> State {
     SetTargetFPS(TARGET_FPS);
+
     init_window(WINDOW_WIDTH, WINDOW_HEIGHT, "game");
 
     State {
-        rect: Rectangle {
-            x: (WINDOW_WIDTH as f32 - 100.0) / 2.0,
-            y: (WINDOW_HEIGHT as f32 - 100.0) / 2.0,
-            width: 100.0,
-            height: 100.0,
-        },
-        speed: 850.0,
         mouse_pos: Vector2 { x: 0.0, y: 0.0 },
         target: LoadRenderTexture(TARGET_WIDTH, TARGET_HEIGHT),
+        tx: load_texture("img/human_idle.png"),
     }
 }
 
@@ -110,6 +107,25 @@ pub unsafe fn game_frame(state: &mut State) {
             let y: i32 = TARGET_HEIGHT / 2 - fontsize / 2;
 
             draw_text(text, x, y, fontsize as usize, c);
+
+            DrawTexturePro(
+                state.tx,
+                Rectangle {
+                    x: 0.0,
+                    y: 0.0,
+                    width: 32.0,
+                    height: 32.0,
+                },
+                Rectangle {
+                    x: 0.0,
+                    y: 0.0,
+                    width: TARGET_WIDTH as f32,
+                    height: TARGET_HEIGHT as f32,
+                },
+                ORIGIN,
+                0.0,
+                WHITE,
+            );
 
             //let rect_pos = format! {
             //    "rect: [{x}, {y}]",

@@ -2,3 +2,4 @@ raylib
 target
 Cargo.lock
 .aider*
+img
