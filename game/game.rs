@@ -55,7 +55,17 @@ pub unsafe fn game_init() -> State {
     // game/game.rs|43 col 5-54 error| cannot assign to data in an index of `HashMap<i32, raylib_wasm::Texture>` trait `IndexMut` is required to modify indexed content, but it is not implemented for `HashMap<i32, raylib_wasm::Texture>`
     //textures[&0] = load_texture("img/human_idle.png");
 
-    textures.insert(0, load_texture("img/human_idle.png"));
+    let texture = load_texture("img/human_idle.png");
+    textures.insert(0, TextureInfo {
+        txid: 0,
+        width: texture.width,
+        height: texture.height,
+        frame_width: texture.width,
+        frame_height: texture.height,
+        num_frames: 1,
+        num_contexts: 1,
+        tx: texture,
+    });
 
     State {
         mouse_pos: Vector2 { x: 0.0, y: 0.0 },
