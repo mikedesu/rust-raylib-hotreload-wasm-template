@@ -1,4 +1,5 @@
-use raylib_wasm::{KeyboardKey as KEY, *};
+use raylib_wasm::prelude::*;
+use raylib_wasm::prelude::KeyboardKey as KEY;
 
 const WINDOW_WIDTH: i32 = 800;
 const WINDOW_HEIGHT: i32 = 600;

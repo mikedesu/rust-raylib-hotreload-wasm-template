@@ -1,10 +1,18 @@
+use game::*;
+
+use raylib_wasm::prelude::*;
+
 #[cfg(feature = "native")]
 use libloading::{Library, Symbol};
-use raylib_wasm::*;
-#[cfg(feature = "native")]
-use raylib_wasm::KeyboardKey as Key;
 
-use game::*;
+#[cfg(all(feature = "web", not(target_arch = "wasm32")))]
+compile_error!("`web` feature only works with wasm32 targets");
+
+#[cfg(all(feature = "native", target_arch = "wasm32"))]
+compile_error!("to compile for WASM do `--features=web --no-default-features`");
+
+#[cfg(all(not(feature = "native"), not(target_arch = "wasm32")))]
+compile_error!("to compile for native just do `cargo build`");
 
 #[cfg(feature = "native")]
 const fn get_game_path() -> &'static str {
@@ -33,27 +41,37 @@ unsafe fn load_lib(file_path: &str) -> Library {
 
 #[inline]
 #[cfg(feature = "native")]
-unsafe fn load_fn<'lib, T>(lib: &'lib Library, symbol: &str) -> Symbol::<'lib, T> {
-    lib.get(symbol.as_bytes()).map_err(|err| {
-        eprintln!("{err}"); err
-    }).unwrap()
+unsafe fn load_fn_unchecked<'lib, T: 'lib>(
+    lib: &'lib Library,
+    symbol: &str
+) -> Symbol::<'lib, T> {
+    match lib.get(symbol.as_bytes()) {
+        Ok(ok) => ok,
+        Err(e) => panic!("[error loading fn {symbol}] {e}")
+    }
 }
 
 unsafe fn start() {
     #[cfg(feature = "native")]
     let mut lib = load_lib(GAME_PATH);
+
     #[cfg(feature = "native")]
-    let mut game_frame = load_fn::<Symbol::<GameFrame>>(&lib, "game_frame");
+    let mut game_frame = load_fn_unchecked::<GameFrame>(
+        &lib,
+        "game_frame"
+    );
 
     let mut state = game_init();
     while !WindowShouldClose() {
         #[cfg(feature = "native")]
-        if IsKeyPressed(Key::R) {
+        if IsKeyPressed(KeyboardKey::R) {
             drop(game_frame);
             drop(lib);
             lib = load_lib(GAME_PATH);
-            game_frame = load_fn(&lib, "game_frame");
+            println!("[HOTRELOADING!]");
+            game_frame = load_fn_unchecked(&lib, "game_frame");
         }
+
         game_frame(&mut state);
     }
 }

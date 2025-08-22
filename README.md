@@ -13,4 +13,7 @@ $ python -m http.server
 $ <browser> http://0.0.0.0:8000/
 ```
 
+> [!NOTE]
+> To hotreload, compile `game` in the root directory, not in the `game` directory.
+
 *More about the library*: <https://github.com/rakivo/raylib-wasm>
