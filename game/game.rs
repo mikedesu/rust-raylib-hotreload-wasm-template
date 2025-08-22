@@ -1,11 +1,21 @@
 //use raylib_wasm::{KeyboardKey as KEY, *};
 //use raylib_wasm::KeyboardKey as KEY;
 use raylib_wasm::*;
-mod state;
+
 // use crate::state::State; // doesn't work
 // use super::state::State; // doesn't work
 // use state::State; // doesn't work
+
+mod state;
+//use state::texture_info::TextureInfo;
 use state::State;
+
+// need to import texture_info.rs's TextureInfo struct
+// it is located in ./state/texture_info.rs
+//use texture_info::TextureInfo; // unresolved import, use of undeclared crate or module
+//mod texture_info; // unresolved module, cant find module file: texture_info.rs, or
+// texture_info/mod.rs
+
 use std::collections::HashMap;
 
 const WINDOW_WIDTH: i32 = 1280;
@@ -38,7 +48,7 @@ pub unsafe fn game_init() -> State {
 
     init_window(WINDOW_WIDTH, WINDOW_HEIGHT, "game");
 
-    let mut textures: HashMap<i32, Texture> = HashMap::new();
+    let mut textures: HashMap<i32, TextureInfo> = HashMap::new();
 
     // game/game.rs|43 col 5-54 error| cannot assign to data in an index of `HashMap<i32, raylib_wasm::Texture>` trait `IndexMut` is required to modify indexed content, but it is not implemented for `HashMap<i32, raylib_wasm::Texture>`
     //textures[&0] = load_texture("img/human_idle.png");
@@ -107,24 +117,24 @@ unsafe fn handle_drawing(state: &mut State) {
 
             draw_text(text, x, y, fontsize as usize, c);
 
-            DrawTexturePro(
-                *state.textures.get(&0).unwrap(),
-                Rectangle {
-                    x: 0.0,
-                    y: 0.0,
-                    width: 32.0,
-                    height: 32.0,
-                },
-                Rectangle {
-                    x: 0.0,
-                    y: 0.0,
-                    width: TARGET_WIDTH as f32,
-                    height: TARGET_HEIGHT as f32,
-                },
-                ORIGIN,
-                0.0,
-                WHITE,
-            );
+            //DrawTexturePro(
+            //    *state.textures.get(&0).unwrap(),
+            //    Rectangle {
+            //        x: 0.0,
+            //        y: 0.0,
+            //        width: 32.0,
+            //        height: 32.0,
+            //    },
+            //    Rectangle {
+            //        x: 0.0,
+            //        y: 0.0,
+            //        width: TARGET_WIDTH as f32,
+            //        height: TARGET_HEIGHT as f32,
+            //    },
+            //    ORIGIN,
+            //    0.0,
+            //    WHITE,
+            //);
 
             //let rect_pos = format! {
             //    "rect: [{x}, {y}]",
