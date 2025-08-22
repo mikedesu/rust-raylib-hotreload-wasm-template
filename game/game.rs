@@ -7,6 +7,8 @@ use raylib_wasm::*;
 // use state::State; // doesn't work
 
 mod state;
+mod texture_info;
+
 use state::State;
 use texture_info::TextureInfo;
 
