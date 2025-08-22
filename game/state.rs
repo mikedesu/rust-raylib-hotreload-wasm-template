@@ -1,7 +1,7 @@
 use raylib_wasm::RenderTexture2D;
 use raylib_wasm::Vector2;
 use std::collections::HashMap;
-use crate::texture_info::TextureInfo;
+use crate::game::texture_info::TextureInfo;
 
 pub struct State {
     pub mouse_pos: Vector2,
