@@ -1,4 +1,4 @@
-use raylib_wasm::Texture;
+use raylib_wasm::prelude::Texture;
 
 pub struct TextureInfo {
     pub txid: i32,

@@ -1,8 +1,9 @@
 #[cfg(feature = "native")]
 use libloading::{Library, Symbol};
+use raylib_wasm::native::fns::IsKeyPressed;
+use raylib_wasm::native::fns::WindowShouldClose;
 #[cfg(feature = "native")]
-use raylib_wasm::KeyboardKey as Key;
-use raylib_wasm::*;
+use raylib_wasm::prelude::KeyboardKey as Key;
 
 use game::*;
 
