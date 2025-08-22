@@ -7,8 +7,8 @@ use raylib_wasm::*;
 // use state::State; // doesn't work
 
 mod state;
-//use state::texture_info::TextureInfo;
 use state::State;
+use crate::texture_info::TextureInfo;
 
 // need to import texture_info.rs's TextureInfo struct
 // it is located in ./state/texture_info.rs
