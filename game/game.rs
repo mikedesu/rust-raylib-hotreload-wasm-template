@@ -1,6 +1,10 @@
+//#[cfg(feature = "native")]
 use raylib_wasm::prelude::*;
+//use raylib_wasm
+
 mod state;
 mod texture_info;
+use crate::texture_info::new_texture_info;
 use state::State;
 use std::collections::HashMap;
 use texture_info::TextureInfo;
@@ -10,7 +14,7 @@ const WINDOW_HEIGHT: i32 = 720;
 const TARGET_WIDTH: i32 = 640;
 const TARGET_HEIGHT: i32 = 360;
 
-//const ORIGIN: Vector2 = Vector2 { x: 0.0, y: 0.0 };
+const ORIGIN: Vector2 = Vector2 { x: 0.0, y: 0.0 };
 
 const TARGET_SRC: Rectangle = Rectangle {
     x: 0.0,
@@ -35,20 +39,8 @@ pub unsafe fn game_init() -> State {
 
     let mut textures: HashMap<i32, TextureInfo> = HashMap::new();
 
-    let texture = load_texture("img/human_idle.png");
-    textures.insert(
-        0,
-        TextureInfo {
-            txid: 0,
-            width: texture.width,
-            height: texture.height,
-            frame_width: texture.width,
-            frame_height: texture.height,
-            num_frames: 1,
-            num_contexts: 1,
-            tx: texture,
-        },
-    );
+    let t = load_texture("img/human_idle.png");
+    textures.insert(0, new_texture_info(0, t.width, t.height, 32, 32, 16, 4, t));
 
     State {
         mouse_pos: Vector2 { x: 0.0, y: 0.0 },
@@ -127,7 +119,7 @@ unsafe fn handle_drawing(state: &mut State) {
         state.target.texture,
         TARGET_SRC,
         TARGET_DST,
-        Vector2 { x: 0.0, y: 0.0 },
+        ORIGIN,
         0.0,
         WHITE,
     );

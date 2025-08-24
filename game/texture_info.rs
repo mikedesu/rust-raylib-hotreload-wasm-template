@@ -10,3 +10,25 @@ pub struct TextureInfo {
     pub num_contexts: i32,
     pub tx: Texture,
 }
+
+pub fn new_texture_info(
+    txid: i32,
+    w: i32,
+    h: i32,
+    fw: i32,
+    fh: i32,
+    nf: i32,
+    nc: i32,
+    tx: Texture,
+) -> TextureInfo {
+    TextureInfo {
+        txid: txid,
+        width: w,
+        height: h,
+        frame_width: fw,
+        frame_height: fh,
+        num_frames: nf,
+        num_contexts: nc,
+        tx: tx,
+    }
+}

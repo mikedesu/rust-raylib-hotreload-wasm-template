@@ -5,10 +5,18 @@ edition = "2021"
 build = "build.rs"
 
 [features]
+default = ["native"]
+
 web = ["raylib-wasm/web", "game/web"]
 native = ["raylib-wasm/native", "game/native"]
 
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+raylib-wasm = { version = "0.0.19", default-features = false, features = ["web"] }
+game = { path = "game", features = ["web"] }
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+raylib-wasm = { version = "0.0.19", default-features = false, features = ["native"] }
+game = { path = "game", features = ["native"] }
+
 [dependencies]
 libloading = "0.8.3"
-game = { path = "game" }
-raylib-wasm = { version = "0.0.21", default-features = false }
