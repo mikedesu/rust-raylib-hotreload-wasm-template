@@ -2,9 +2,12 @@
 use raylib_wasm::prelude::*;
 //use raylib_wasm
 
+mod sprite;
 mod state;
 mod texture_info;
+use crate::sprite::new_sprite;
 use crate::texture_info::new_texture_info;
+use sprite::Sprite;
 use state::State;
 use std::collections::HashMap;
 use texture_info::TextureInfo;
@@ -38,14 +41,22 @@ pub unsafe fn game_init() -> State {
     init_window(WINDOW_WIDTH, WINDOW_HEIGHT, "game");
 
     let mut textures: HashMap<i32, TextureInfo> = HashMap::new();
+    let mut sprites: HashMap<i32, Sprite> = HashMap::new();
 
     let t = load_texture("img/human_idle.png");
-    textures.insert(0, new_texture_info(0, t.width, t.height, 32, 32, 16, 4, t));
+    let ti = new_texture_info(0, t.width, t.height, 32, 32, 16, 4, t);
+    textures.insert(0, ti);
+
+    let s = new_sprite(0, 32, 32, 16, 4);
+
+    sprites.insert(0, s);
 
     State {
         mouse_pos: Vector2 { x: 0.0, y: 0.0 },
         target: LoadRenderTexture(TARGET_WIDTH, TARGET_HEIGHT),
         textures: textures, //tx: load_texture("img/human_idle.png"),
+        sprites: sprites,
+        frame_count: 0,
     }
 }
 
@@ -81,6 +92,46 @@ unsafe fn handle_drawing(state: &mut State) {
     let x: i32 = TARGET_WIDTH / 2 - m / 2;
     let y: i32 = TARGET_HEIGHT / 2 - fontsize / 2;
     draw_text(text, x, y, fontsize as usize, c);
+
+    let hero_sprite = state.sprites.get_mut(&0);
+    if hero_sprite.is_some() {
+        let hs: &mut Sprite = hero_sprite.unwrap();
+        let tx = state.textures.get(&hs.txid).unwrap();
+
+        let w = tx.frame_width;
+        let h = tx.frame_height;
+
+        let src = Rectangle {
+            x: (hs.current_frame * tx.frame_width) as f32,
+            y: 0.0,
+            width: w as f32,
+            height: h as f32,
+        };
+
+        let scale = 8.0;
+        let dw = tx.frame_width as f32 * scale;
+        let dh = tx.frame_height as f32 * scale;
+        let dx = TARGET_WIDTH as f32 / 2.0 - dw / 2.0;
+        let dy = TARGET_HEIGHT as f32 / 2.0 - dh / 2.0;
+
+        let dst = Rectangle {
+            x: dx as f32,
+            y: dy as f32,
+            width: dw,
+            height: dh,
+        };
+        DrawTexturePro(tx.tx, src, dst, ORIGIN, 0.0, WHITE);
+
+        if state.frame_count % 10 == 0 {
+            hs.current_frame += 1;
+            if hs.current_frame >= hs.num_frames {
+                hs.current_frame = 0;
+            }
+        }
+
+        state.frame_count += 1;
+    }
+
     //DrawTexturePro(
     //    *state.textures.get(&0).unwrap(),
     //    Rectangle {
