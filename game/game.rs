@@ -74,10 +74,6 @@ unsafe fn handle_keys(state: &mut State) {
     }
 }
 
-unsafe fn handle_mouse(state: &mut State) {
-    state.mouse_pos = GetMousePosition();
-}
-
 unsafe fn handle_drawing(state: &mut State) {
     BeginDrawing();
     BeginTextureMode(state.target);
@@ -153,7 +149,6 @@ pub type GameFrame = unsafe fn(state: &mut State);
 #[no_mangle]
 pub unsafe fn game_frame(state: &mut State) {
     handle_keys(state);
-    handle_mouse(state);
     handle_drawing(state);
 }
 
