@@ -21,3 +21,10 @@ pub fn new_sprite(txid: i32, w: i32, h: i32, nf: i32, nc: i32) -> Sprite {
         num_contexts: nc,
     }
 }
+
+pub fn sprite_anim(s: &mut Sprite) {
+    s.current_frame += 1;
+    if s.current_frame >= s.num_frames {
+        s.current_frame = 0;
+    }
+}

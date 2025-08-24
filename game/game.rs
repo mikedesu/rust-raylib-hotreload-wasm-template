@@ -6,6 +6,7 @@ mod sprite;
 mod state;
 mod texture_info;
 use crate::sprite::new_sprite;
+use crate::sprite::sprite_anim;
 use crate::texture_info::new_texture_info;
 use sprite::Sprite;
 use state::State;
@@ -82,8 +83,6 @@ unsafe fn handle_drawing(state: &mut State) {
         b: 0x66 as u8,
         a: 255,
     };
-    //let text: str = "evildojo666"; // this doesnt work
-    // declare a new string that says "evildojo666"
     let text: &str = "evildojo666";
     // why does this work?
     // because the string is a string slice, which is a reference to a string literal
@@ -120,51 +119,16 @@ unsafe fn handle_drawing(state: &mut State) {
             width: dw,
             height: dh,
         };
+
         DrawTexturePro(tx.tx, src, dst, ORIGIN, 0.0, WHITE);
 
         if state.frame_count % 10 == 0 {
-            hs.current_frame += 1;
-            if hs.current_frame >= hs.num_frames {
-                hs.current_frame = 0;
-            }
+            sprite_anim(hs);
         }
 
         state.frame_count += 1;
     }
 
-    //DrawTexturePro(
-    //    *state.textures.get(&0).unwrap(),
-    //    Rectangle {
-    //        x: 0.0,
-    //        y: 0.0,
-    //        width: 32.0,
-    //        height: 32.0,
-    //    },
-    //    Rectangle {
-    //        x: 0.0,
-    //        y: 0.0,
-    //        width: TARGET_WIDTH as f32,
-    //        height: TARGET_HEIGHT as f32,
-    //    },
-    //    ORIGIN,
-    //    0.0,
-    //    WHITE,
-    //);
-    //let rect_pos = format! {
-    //    "rect: [{x}, {y}]",
-    //    x = state.rect.x.round(),
-    //    y = state.rect.y.round()
-    //};
-    //draw_text(&rect_pos, 10, 10, 20, RAYWHITE);
-    //let mouse_pos = format! {
-    //    "mouse: [{x}, {y}]",
-    //    x = state.mouse_pos.x.round(),
-    //    y = state.mouse_pos.y.round()
-    //};
-    //draw_text(&mouse_pos, 10, 30, 20, RAYWHITE);
-    //let mx = (state.mouse_pos.x / 2.0) as i32;
-    //let my = (state.mouse_pos.y / 2.0) as i32;
-    //DrawCircle(mx, my, 10.0, RAYWHITE);
     EndTextureMode();
     DrawTexturePro(
         state.target.texture,
