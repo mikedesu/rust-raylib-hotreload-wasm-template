@@ -98,23 +98,18 @@ unsafe fn handle_drawing(state: &mut State) {
     if hero_sprite.is_some() {
         let hs: &mut Sprite = hero_sprite.unwrap();
         let tx = state.textures.get(&hs.txid).unwrap();
-
         let w = tx.frame_width;
         let h = tx.frame_height;
-
         let src = Rectangle {
             x: (hs.current_frame * tx.frame_width) as f32,
             y: (hs.current_context * tx.frame_height) as f32,
             width: w as f32,
             height: h as f32,
         };
-
-        let scale = 8.0;
-        let dw = tx.frame_width as f32 * scale;
-        let dh = tx.frame_height as f32 * scale;
+        let dw = tx.frame_width as f32;
+        let dh = tx.frame_height as f32;
         let dx = TARGET_WIDTH as f32 / 2.0 - dw / 2.0;
         let dy = TARGET_HEIGHT as f32 / 2.0 - dh / 2.0;
-
         let dst = Rectangle {
             x: dx as f32,
             y: dy as f32,
