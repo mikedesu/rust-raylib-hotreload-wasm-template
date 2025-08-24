@@ -28,3 +28,16 @@ pub fn sprite_anim(s: &mut Sprite) {
         s.current_frame = 0;
     }
 }
+
+pub fn sprite_incr_context(s: &mut Sprite) {
+    s.current_context += 1;
+    if s.current_context >= s.num_contexts {
+        s.current_context = 0;
+    }
+}
+
+pub fn sprite_set_context(s: &mut Sprite, i: i32) {
+    if i >= 0 && i < s.num_contexts {
+        s.current_context = i;
+    }
+}

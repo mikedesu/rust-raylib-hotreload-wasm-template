@@ -1,4 +1,5 @@
 //#[cfg(feature = "native")]
+use raylib_wasm::prelude::KeyboardKey::*;
 use raylib_wasm::prelude::*;
 //use raylib_wasm
 
@@ -7,6 +8,7 @@ mod state;
 mod texture_info;
 use crate::sprite::new_sprite;
 use crate::sprite::sprite_anim;
+use crate::sprite::sprite_incr_context;
 use crate::texture_info::new_texture_info;
 use sprite::Sprite;
 use state::State;
@@ -61,11 +63,15 @@ pub unsafe fn game_init() -> State {
     }
 }
 
-unsafe fn handle_keys(_state: &mut State) {
-    //let dt = GetFrameTime();
-    //if IsKeyDown(KEY::W) {
-    //    state.rect.y -= dt * state.speed
-    //}
+unsafe fn handle_keys(state: &mut State) {
+    if IsKeyPressed(Down) {
+        let hero_sprite = state.sprites.get_mut(&0);
+        if hero_sprite.is_some() {
+            let hs: &mut Sprite = hero_sprite.unwrap();
+            sprite_incr_context(hs);
+            //println!("hs.current_context: {}", hs.current_context);
+        }
+    }
 }
 
 unsafe fn handle_mouse(state: &mut State) {
@@ -102,7 +108,7 @@ unsafe fn handle_drawing(state: &mut State) {
 
         let src = Rectangle {
             x: (hs.current_frame * tx.frame_width) as f32,
-            y: 0.0,
+            y: (hs.current_context * tx.frame_height) as f32,
             width: w as f32,
             height: h as f32,
         };
